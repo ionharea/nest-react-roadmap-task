@@ -4,7 +4,7 @@ import {
   Get,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { FindOneParams } from '../pipes/findOneParams';
+import { FindOneParams } from '../../pipes/findOneParams';
 import { UsersService } from './users.service';
 import { PostsService } from '../posts/posts.service';
 
@@ -28,7 +28,7 @@ export class UsersController {
   }
 
   @Get('/:userId')
-  async getUser(@Param() params: Pick<FindOneParams, 'userId'>) {
+  async getUser(@Param() params: FindOneParams) {
     const user = await this.usersService.getUser(parseInt(params.userId));
 
     if (!user)
@@ -40,7 +40,7 @@ export class UsersController {
   }
 
   @Get('/:userId/posts')
-  async getUserPosts(@Param() params: Pick<FindOneParams, 'userId'>) {
+  async getUserPosts(@Param() params: FindOneParams) {
     const userPosts = await this.postsService.getUserPosts(
       parseInt(params.userId),
     );

@@ -1,6 +1,7 @@
+import axios from 'axios';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import axios from 'axios';
+import { Post } from '../../types/post';
 
 @Injectable()
 export class PostsService {
@@ -47,9 +48,9 @@ export class PostsService {
       if (!posts) return null;
 
       const userPost: Post | undefined = posts.find(
-        (post) => post.userId === userId && post.id === postId,
+        (post) => post.id === postId,
       );
-      return userPost ? [userPost] : [];
+      return userPost ?? {};
     } catch {
       return null;
     }
