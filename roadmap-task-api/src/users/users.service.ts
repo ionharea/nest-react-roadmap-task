@@ -8,17 +8,22 @@ export class UsersService {
 
   private apiUrl = this.configService.get('TYPICODE_URL');
 
-  getUser = async (id: number) => {
+  getUsers = async () => {
     try {
-      const { data } = await axios.get(`${this.apiUrl}/users/${id}`);
+      const { data }: { data: User[] } = await axios.get(
+        `${this.apiUrl}/users`,
+      );
       return data;
     } catch {
       return null;
     }
   };
-  getUsers = async () => {
+
+  getUser = async (userId: number) => {
     try {
-      const { data } = await axios.get(`${this.apiUrl}/users`);
+      const { data }: { data: User } = await axios.get(
+        `${this.apiUrl}/users/${userId}`,
+      );
       return data;
     } catch {
       return null;

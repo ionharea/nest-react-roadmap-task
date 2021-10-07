@@ -6,10 +6,14 @@ import {
 } from '@nestjs/common';
 import { FindOneParams } from '../pipes/findOneParams';
 import { UsersService } from './users.service';
+import { PostsService } from '../posts/posts.service';
 
-@Controller('users')
+@Controller()
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly postsService: PostsService,
+  ) {}
 
   @Get()
   async getUsers() {
@@ -23,9 +27,9 @@ export class UsersController {
     return users;
   }
 
-  @Get(':id')
-  async getUser(@Param() params: FindOneParams) {
-    const user = await this.usersService.getUser(params.id);
+  @Get('/:userId')
+  async getUser(@Param() params: Pick<FindOneParams, 'userId'>) {
+    const user = await this.usersService.getUser(parseInt(params.userId));
 
     if (!user)
       throw new InternalServerErrorException(
@@ -33,5 +37,34 @@ export class UsersController {
       );
 
     return user;
+  }
+
+  @Get('/:userId/posts')
+  async getUserPosts(@Param() params: Pick<FindOneParams, 'userId'>) {
+    const userPosts = await this.postsService.getUserPosts(
+      parseInt(params.userId),
+    );
+
+    if (!userPosts)
+      throw new InternalServerErrorException(
+        'Oops, something went wrong, could not fetch the data form the external API',
+      );
+
+    return userPosts;
+  }
+
+  @Get('/:userId/posts/:postId')
+  async getUserPost(@Param() params: FindOneParams) {
+    const userPost = await this.postsService.getUserPost(
+      parseInt(params.userId),
+      parseInt(params.postId),
+    );
+
+    if (!userPost)
+      throw new InternalServerErrorException(
+        'Oops, something went wrong, could not fetch the data form the external API',
+      );
+
+    return userPost;
   }
 }
