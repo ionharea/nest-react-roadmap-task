@@ -1,12 +1,13 @@
+import axios from 'axios';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import axios from 'axios';
+import { User } from '../../types/user';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly configService: ConfigService) {}
 
-  private apiUrl = this.configService.get('TYPICODE_URL');
+  private readonly apiUrl = this.configService.get('TYPICODE_URL');
 
   getUsers = async () => {
     try {
