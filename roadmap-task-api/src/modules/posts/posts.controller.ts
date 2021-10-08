@@ -1,10 +1,11 @@
 import {
   Controller,
+  Param,
+  Query,
   Get,
   InternalServerErrorException,
-  Param,
 } from '@nestjs/common';
-import { FindOneParams } from '../../pipes/findOneParams';
+import { FindOneParams, QueryParams } from '../../pipes/findOneParams';
 import { PostsService } from './posts.service';
 import { CommentsService } from '../comments/comments.service';
 
@@ -16,8 +17,8 @@ export class PostsController {
   ) {}
 
   @Get()
-  async getPosts() {
-    const posts = await this.postsService.getPosts();
+  async getPosts(@Query() query: QueryParams) {
+    const posts = await this.postsService.getPosts(query._page, query._limit);
 
     if (!posts)
       throw new InternalServerErrorException(
@@ -29,7 +30,7 @@ export class PostsController {
 
   @Get('/:postId')
   async getPost(@Param() params: FindOneParams) {
-    const post = await this.postsService.getPost(parseInt(params.postId));
+    const post = await this.postsService.getPost(params.postId);
 
     if (!post)
       throw new InternalServerErrorException(
@@ -41,30 +42,28 @@ export class PostsController {
 
   @Get('/:postId/comments')
   async getPostComments(@Param() params: FindOneParams) {
-    const post = await this.commentsService.getPostComments(
-      parseInt(params.postId),
-    );
+    const comments = await this.commentsService.getPostComments(params.postId);
 
-    if (!post)
+    if (!comments)
       throw new InternalServerErrorException(
         'Oops, something went wrong, could not fetch the data form the external API',
       );
 
-    return post;
+    return comments;
   }
 
   @Get('/:postId/comments/:commentId')
   async getPostComment(@Param() params: FindOneParams) {
-    const post = await this.commentsService.getPostComment(
-      parseInt(params.postId),
-      parseInt(params.commentId),
+    const comment = await this.commentsService.getPostComment(
+      params.postId,
+      params.commentId,
     );
 
-    if (!post)
+    if (!comment)
       throw new InternalServerErrorException(
         'Oops, something went wrong, could not fetch the data form the external API',
       );
 
-    return post;
+    return comment;
   }
 }

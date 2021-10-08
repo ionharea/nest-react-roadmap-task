@@ -2,6 +2,10 @@ import axios from 'axios';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Post } from '../../types/post';
+import {
+  DEF_LIMIT,
+  DEF_PAGE,
+} from '../../global/constants/defPaginationParams';
 
 @Injectable()
 export class PostsService {
@@ -9,10 +13,10 @@ export class PostsService {
 
   private apiUrl = this.configService.get('TYPICODE_URL');
 
-  getPosts = async () => {
+  getPosts = async (page = DEF_PAGE, limit = DEF_LIMIT) => {
     try {
       const { data }: { data: Post[] } = await axios.get(
-        `${this.apiUrl}/posts`,
+        `${this.apiUrl}/posts?_page=${page}&_limit=${limit}`,
       );
       return data;
     } catch {
@@ -20,36 +24,36 @@ export class PostsService {
     }
   };
 
-  getPost = async (postId: number) => {
+  getPost = async (postId: string) => {
     try {
       const { data }: { data: Post } = await axios.get(
         `${this.apiUrl}/posts/${postId}`,
       );
       return data;
-    } catch {
+    } catch (err) {
       return null;
     }
   };
 
-  getUserPosts = async (userId: number) => {
+  getUserPosts = async (userId: string, page = DEF_PAGE, limit = DEF_LIMIT) => {
     try {
-      const posts = await this.getPosts();
-      if (!posts) return null;
-
-      return posts.filter((post) => post.userId === userId);
-    } catch {
-      return null;
-    }
-  };
-
-  getUserPost = async (userId: number, postId: number) => {
-    try {
-      const posts = await this.getPosts();
-      if (!posts) return null;
-
-      const userPost: Post | undefined = posts.find(
-        (post) => post.id === postId,
+      const { data: posts }: { data: Post[] } = await axios.get(
+        `${this.apiUrl}/users/${userId}/posts?_page=${page}&_limit=${limit}`,
       );
+      return posts;
+    } catch {
+      return null;
+    }
+  };
+
+  getUserPost = async (userId: string, postId: string) => {
+    try {
+      const { data: posts }: { data: Post[] } = await axios.get(
+        `${this.apiUrl}/users/${userId}/posts`,
+      );
+      if (posts.length === 0 || postId.split('.').length > 1) return {};
+
+      const userPost = posts.find((post) => post.id === parseInt(postId));
       return userPost ?? {};
     } catch {
       return null;

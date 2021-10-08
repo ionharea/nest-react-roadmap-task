@@ -13,3 +13,13 @@ export class FindOneParams {
   @IsNumberString()
   commentId: string;
 }
+
+export class QueryParams {
+  @ValidateIf((o) => o._page)
+  @IsNumberString()
+  _page: string;
+
+  @ValidateIf((o) => o._limit)
+  @IsNumberString()
+  _limit: string;
+}

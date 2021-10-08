@@ -7,7 +7,7 @@ import { Comment } from '../../types/comment';
 export class CommentsService {
   constructor(private readonly configService: ConfigService) {}
 
-  private apiUrl = this.configService.get('TYPICODE_URL');
+  private readonly apiUrl = this.configService.get('TYPICODE_URL');
 
   getComments = async () => {
     try {
@@ -31,26 +31,25 @@ export class CommentsService {
     }
   };
 
-  getPostComments = async (postId: number) => {
+  getPostComments = async (postId: string) => {
     try {
       const { data }: { data: Comment[] } = await axios.get(
         `${this.apiUrl}/posts/${postId}/comments`,
       );
-      if (!data) return null;
-
       return data;
     } catch {
       return null;
     }
   };
 
-  getPostComment = async (postId: number, commentId: number) => {
+  getPostComment = async (postId: string, commentId: string) => {
     try {
       const postComments = await this.getPostComments(postId);
-      if (!postComments) return null;
+      if (postComments.length === 0 || commentId.split('.').length > 1)
+        return {};
 
-      const postComment: Comment | undefined = postComments.find(
-        (comment) => comment.id === commentId,
+      const postComment = postComments.find(
+        (comment) => comment.id === parseInt(commentId),
       );
       return postComment ?? {};
     } catch {
