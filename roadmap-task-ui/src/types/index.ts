@@ -1,3 +1,1 @@
-export type { User } from './user';
-export type { Post } from './post';
-export type { Comment } from './comment';
+export type { User } from '../../../roadmap-task-api/src/types/user';
