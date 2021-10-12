@@ -6,7 +6,7 @@ export const UsersRouter = () => {
   return (
     <Switch>
       <Route path='/users' component={UsersList} exact />
-      <Route path='/users/:userId' component={UserDetails} />
+      <Route path='/users/:userId' component={UserDetails} exact />
     </Switch>
   );
 };
