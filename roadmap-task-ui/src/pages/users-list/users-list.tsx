@@ -7,13 +7,23 @@ import { Link } from 'react-router-dom';
 export const UsersList = () => {
   const [users, setUsers] = useState([] as User[]);
 
-  const updateUsers =  (page: number) => {
-    getUsers(String(page)).then(users => setUsers(users));
-  }
-
   useEffect(() => {
     getUsers().then(users => setUsers(users));
   }, []);
+
+  const updateUsers = (page: number) => {
+    getUsers(String(page)).then(users => setUsers(users));
+  };
+
+  const itemRender = (current: number, type: 'page' | 'prev' | 'next' | 'jump-prev' | 'jump-next', originalElement: React.ReactElement<HTMLElement>) => {
+    if (type === 'prev') {
+      return <a>Previous</a>;
+    }
+    if (type === 'next') {
+      return <a>Next</a>;
+    }
+    return originalElement;
+  };
 
   return (
     <>
@@ -31,8 +41,8 @@ export const UsersList = () => {
           </Link>
         )}
       />
-      <br/>
-      <Pagination defaultCurrent={1} total={50} onChange={(page) => updateUsers(page) } />
+      <br />
+      <Pagination defaultCurrent={1} total={50} itemRender={itemRender} onChange={(page) => updateUsers(page)} />
     </>
   );
 };
