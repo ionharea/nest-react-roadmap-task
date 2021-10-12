@@ -3,6 +3,7 @@ import { getUsers } from '../../services/users';
 import { List, Pagination } from 'antd';
 import { User } from '../../types';
 import { Link } from 'react-router-dom';
+import { itemRender } from '../utils';
 
 export const UsersList = () => {
   const [users, setUsers] = useState([] as User[]);
@@ -13,16 +14,6 @@ export const UsersList = () => {
 
   const updateUsers = (page: number) => {
     getUsers(String(page)).then(users => setUsers(users));
-  };
-
-  const itemRender = (current: number, type: 'page' | 'prev' | 'next' | 'jump-prev' | 'jump-next', originalElement: React.ReactElement<HTMLElement>) => {
-    if (type === 'prev') {
-      return <a>Previous</a>;
-    }
-    if (type === 'next') {
-      return <a>Next</a>;
-    }
-    return originalElement;
   };
 
   return (
