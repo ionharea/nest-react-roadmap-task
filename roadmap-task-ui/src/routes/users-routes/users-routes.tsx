@@ -5,8 +5,8 @@ import { UserDetails } from '../../pages/user-details';
 export const UsersRouter = () => {
   return (
     <Switch>
+      <Route path='/users' component={UsersList} exact />
       <Route path='/users/:userId' component={UserDetails} />
-      <Route path='/users' component={UsersList} />
     </Switch>
   );
 };
