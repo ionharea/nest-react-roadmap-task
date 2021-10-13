@@ -1,6 +1,7 @@
 import React from 'react';
-import { UsersRouter } from './routes/users-routes/users-routes';
-import { PostsRouter } from './routes/posts-routes/posts-routes';
+import { RouterConfig } from './routes/router-config';
+import { Link, Route } from 'react-router-dom';
+import { List } from 'antd';
 
 import './App.css';
 
@@ -8,8 +9,22 @@ function App() {
   return (
     <div className='App'>
       <header className='App-header'>
-        <UsersRouter />
-        <PostsRouter />
+        <Route path='/' exact>
+          <List
+            itemLayout='horizontal'
+            dataSource={['Users']}
+            renderItem={item => (
+              <Link to={`/users`}>
+                <List.Item>
+                  <List.Item.Meta
+                    title={item}
+                  />
+                </List.Item>
+              </Link>
+            )}
+          />
+        </ Route>
+        <RouterConfig />
       </header>
     </div>
   );

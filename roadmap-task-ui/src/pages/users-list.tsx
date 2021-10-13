@@ -1,20 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { getUsers } from '../../services/users';
 import { List, Pagination } from 'antd';
-import { User } from '../../types';
+import { User } from '../types';
 import { Link } from 'react-router-dom';
-import { itemRender } from '../utils';
+import { itemRender } from './utils';
+import { getUsers } from '../services';
 
 export const UsersList = () => {
-  const [users, setUsers] = useState([] as User[]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [pageNumber, setPageNumber] = useState(0);
 
   useEffect(() => {
-    getUsers().then(users => setUsers(users));
-  }, []);
-
-  const updateUsers = (page: number) => {
-    getUsers(String(page)).then(users => setUsers(users));
-  };
+    getUsers(String(pageNumber)).then(users => setUsers(users));
+  }, [pageNumber]);
 
   return (
     <>
@@ -33,7 +30,7 @@ export const UsersList = () => {
         )}
       />
       <br />
-      <Pagination defaultCurrent={1} total={50} itemRender={itemRender} onChange={(page) => updateUsers(page)} />
+      <Pagination defaultCurrent={1} total={21} itemRender={itemRender} onChange={(page) => setPageNumber(page)} />
     </>
   );
 };

@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { getUser } from '../../services/users';
 import { List } from 'antd';
 import { useParams } from 'react-router-dom';
-import { User } from '../../../../roadmap-task-api/src/types/user';
-import { PostsList } from '../../components/posts-list';
+import { User } from '../../../roadmap-task-api/src/types/user';
+import { PostsList } from '../components/posts-list';
+import { getUser } from '../services';
 
-export interface IUserIDRouteParam {
+export type UserIDRouteParam = {
   userId: string;
 }
 
 export const UserDetails = () => {
   const [user, setUser] = useState({} as User);
-  const { userId } = useParams<IUserIDRouteParam>();
+  const { userId } = useParams<UserIDRouteParam>();
 
   useEffect(() => {
     getUser(userId).then(user => setUser(user));

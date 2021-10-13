@@ -1,12 +1,12 @@
 import { Route, Switch } from 'react-router-dom';
-import { UsersList } from '../../pages/users-list';
-import { UserDetails } from '../../pages/user-details';
+import { PostDetails, UserDetails, UsersList } from '../pages';
 
-export const UsersRouter = () => {
+export const RouterConfig = () => {
   return (
     <Switch>
       <Route path='/users' component={UsersList} exact />
       <Route path='/users/:userId' component={UserDetails} exact />
+      <Route path='/users/:userId/posts/:postId' component={PostDetails} exact />
     </Switch>
   );
 };

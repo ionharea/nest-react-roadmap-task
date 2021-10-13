@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { List } from 'antd';
 import { useParams } from 'react-router-dom';
-import { getPost } from '../../services/posts';
-import { Post } from '../../types';
+import { Post } from '../types';
+import { getPost } from '../services';
 
 interface IPostIDRouteParam {
   postId: string;
 }
 
 export const PostDetails = () => {
-  const [post, setPost] = useState({} as Post);
+  const [post, setPost] = useState<Post>({} as any);
   const { postId } = useParams<IPostIDRouteParam>();
 
   useEffect(() => {

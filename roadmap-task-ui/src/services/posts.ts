@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { Post } from '../../types';
-import { BASE_API_URL, DEF_LIMIT, DEF_PAGE } from '../constants';
+import { Post } from '../types';
+import { BASE_API_URL, DEF_LIMIT, DEF_PAGE } from './constants';
 
 export const getUserPosts = async (userId: string, page = DEF_PAGE, limit = DEF_LIMIT) => {
   try {
@@ -8,5 +8,14 @@ export const getUserPosts = async (userId: string, page = DEF_PAGE, limit = DEF_
     return data;
   } catch(error) {
     return [];
+  }
+};
+
+export const getPost = async (postId: string) => {
+  try {
+    const { data } = await axios.get<Post>(`${BASE_API_URL}/posts/${postId}`);
+    return data;
+  } catch(error) {
+    return {} as Post;
   }
 };
