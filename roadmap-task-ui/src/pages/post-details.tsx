@@ -3,8 +3,9 @@ import { List } from 'antd';
 import { useParams } from 'react-router-dom';
 import { Post } from '../types';
 import { getPost } from '../services';
+import { PostComments } from '../components/post-comments';
 
-interface IPostIDRouteParam {
+export interface IPostIDRouteParam {
   postId: string;
 }
 
@@ -30,6 +31,9 @@ export const PostDetails = () => {
           </List.Item>
         )}
       />
+      <br/>
+      <br/>
+      <PostComments />
     </>
   );
 };
