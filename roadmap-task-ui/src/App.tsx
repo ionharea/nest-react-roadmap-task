@@ -1,7 +1,7 @@
 import React from 'react';
-import { RouterConfig } from './routes/router-config';
-import { Link, Route } from 'react-router-dom';
 import { List } from 'antd';
+import { Link, Route } from 'react-router-dom';
+import { RouterConfig } from './routes/router-config';
 
 import './App.css';
 

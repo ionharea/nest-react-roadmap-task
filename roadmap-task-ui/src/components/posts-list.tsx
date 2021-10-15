@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { List, Pagination } from 'antd';
+import { Link, useParams } from 'react-router-dom';
 import { itemRender } from '../pages/utils';
 import { Post } from '../types';
 import { UserIDRouteParam } from '../pages/users-details';
 import { getUserPosts } from '../services';
-import { Link, useParams } from 'react-router-dom';
 
 export const PostsList = () => {
   const [posts, setPosts] = useState<Post[]>([]);

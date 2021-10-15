@@ -1,2 +1,2 @@
-export { getUser, getUsers } from './users';
-export { getPost, getUserPosts } from './posts';
+export * from './users';
+export * from './posts';

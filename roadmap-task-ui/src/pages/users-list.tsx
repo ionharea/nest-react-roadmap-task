@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { List, Pagination } from 'antd';
-import { User } from '../types';
 import { Link } from 'react-router-dom';
+import { User } from '../types';
 import { itemRender } from './utils';
 import { getUsers } from '../services';
 
