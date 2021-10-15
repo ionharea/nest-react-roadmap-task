@@ -1,27 +1,34 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { List } from 'antd';
 import { useParams } from 'react-router-dom';
 import { PostsList } from '../components/posts-list';
 import { getUser } from '../services';
-import { User } from '../types';
+import { UsersContext } from '../contexts/providers/users-context';
+import { getItemFromContext } from '../contexts/utils/getItemFromContext';
+import { setContextItems } from '../contexts/utils/setContextItems';
 
 export type UserIDRouteParam = {
   userId: string;
 }
 
 export const UserDetails = () => {
-  const [user, setUser] = useState<User>({} as any);
   const { userId } = useParams<UserIDRouteParam>();
 
+  const { state: persistedUsers, setState } = useContext(UsersContext);
+
+  const user = getItemFromContext(persistedUsers, Number(userId));
+
   useEffect(() => {
-    getUser(userId).then(user => setUser(user));
+    if (!user) {
+      getUser(userId).then(user => setContextItems([user], setState));
+    }
   }, [userId]);
 
   return (
     <>
       <List
         itemLayout='horizontal'
-        dataSource={Object.entries(user).length === 0 ? [] : [user]}
+        dataSource={!user ? [] : [user]}
         renderItem={user => (
           <List.Item>
             <List.Item.Meta
@@ -31,10 +38,9 @@ export const UserDetails = () => {
           </List.Item>
         )}
       />
-      <br/>
-      <br/>
+      <br />
+      <br />
       <PostsList />
     </>
-
   );
 };

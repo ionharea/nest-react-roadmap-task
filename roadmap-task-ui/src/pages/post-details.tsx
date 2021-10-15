@@ -1,27 +1,39 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { List } from 'antd';
 import { useParams } from 'react-router-dom';
-import { Post } from '../types';
 import { getPost } from '../services';
 import { PostComments } from '../components/post-comments';
+import { getItemFromContext } from '../contexts/utils/getItemFromContext';
+import { PostsContext } from '../contexts/providers/posts-context';
+import { setContextItems } from '../contexts/utils/setContextItems';
 
-export interface IPostIDRouteParam {
+export type IPostIDRouteParam = {
   postId: string;
 }
 
 export const PostDetails = () => {
-  const [post, setPost] = useState<Post>({} as any);
   const { postId } = useParams<IPostIDRouteParam>();
 
+  const { state: persistedPosts, setState } = useContext(PostsContext);
+
+  const post = getItemFromContext(persistedPosts, Number(postId));
+
   useEffect(() => {
-    getPost(postId).then(post => setPost(post));
+    console.log(post);
+    if (!post) {
+      getPost(postId).then(post => {
+          console.log(post);
+          setContextItems([post], setState);
+        },
+      );
+    }
   }, [postId]);
 
   return (
     <>
       <List
         itemLayout='horizontal'
-        dataSource={Object.entries(post).length === 0 ? [] : [post]}
+        dataSource={!post ? [] : [post]}
         renderItem={post => (
           <List.Item>
             <List.Item.Meta
@@ -31,8 +43,8 @@ export const PostDetails = () => {
           </List.Item>
         )}
       />
-      <br/>
-      <br/>
+      <br />
+      <br />
       <PostComments />
     </>
   );

@@ -1,19 +1,30 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { List, Pagination } from 'antd';
 import { Link, useParams } from 'react-router-dom';
 import { itemRender } from '../pages/utils';
-import { Post } from '../types';
 import { UserIDRouteParam } from '../pages/users-details';
 import { getUserPosts } from '../services';
+import { getNumOfItemsRequired } from '../contexts/utils';
+import { getItemsFromContext } from '../contexts/utils/getItemsFromContext';
+import { DEF_PAGE } from '../services/constants';
+import { setContextItems } from '../contexts/utils/setContextItems';
+import { PostsContext } from '../contexts/providers/posts-context';
 
 export const PostsList = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [pageNumber, setPageNumber] = useState(0);
+  const [pageNumber, setPageNumber] = useState(Number(DEF_PAGE));
 
   const { userId } = useParams<UserIDRouteParam>();
 
+  const { state: persistedPosts, setState } = useContext(PostsContext);
+
+  const numOfItemsRequired = getNumOfItemsRequired(pageNumber);
+
+  const posts = getItemsFromContext(persistedPosts, pageNumber, numOfItemsRequired);
+
   useEffect(() => {
-    getUserPosts(userId, String(pageNumber)).then(posts => setPosts(posts));
+    if (posts.length !== numOfItemsRequired) {
+      getUserPosts(userId, String(pageNumber)).then(posts => setContextItems(posts, setState));
+    }
   }, [userId, pageNumber]);
 
   return (
