@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ContextType } from '../types';
+import { ContextStateType, ContextType } from '../types';
 
 export const CommentsContext = React.createContext<ContextType<Comment>>
 ({
@@ -8,7 +8,7 @@ export const CommentsContext = React.createContext<ContextType<Comment>>
 });
 
 export const CommentsProvider = (props: any) => {
-  const [state, setState] = useState<Comment[]>([]);
+  const [state, setState] = useState<ContextStateType<Comment>[]>([]);
 
   return (
     <CommentsContext.Provider value={{ state, setState }}>

@@ -3,29 +3,23 @@ import { List } from 'antd';
 import { useParams } from 'react-router-dom';
 import { getPost } from '../services';
 import { PostComments } from '../components/post-comments';
-import { getItemFromContext } from '../contexts/utils/getItemFromContext';
 import { PostsContext } from '../contexts/providers/posts-context';
-import { setContextItems } from '../contexts/utils/setContextItems';
+import { getItemsFromContext, saveItemsToContext } from '../contexts/utils';
 
 export type IPostIDRouteParam = {
   postId: string;
 }
 
 export const PostDetails = () => {
+  const { state, setState } = useContext(PostsContext);
+
   const { postId } = useParams<IPostIDRouteParam>();
 
-  const { state: persistedPosts, setState } = useContext(PostsContext);
-
-  const post = getItemFromContext(persistedPosts, Number(postId));
+  const posts = getItemsFromContext({ state, itemId: Number(postId) });
 
   useEffect(() => {
-    console.log(post);
-    if (!post) {
-      getPost(postId).then(post => {
-          console.log(post);
-          setContextItems([post], setState);
-        },
-      );
+    if (!posts.length) {
+      getPost(postId).then(post => saveItemsToContext({ items: [post] }, setState));
     }
   }, [postId]);
 
@@ -33,7 +27,7 @@ export const PostDetails = () => {
     <>
       <List
         itemLayout='horizontal'
-        dataSource={!post ? [] : [post]}
+        dataSource={posts}
         renderItem={post => (
           <List.Item>
             <List.Item.Meta

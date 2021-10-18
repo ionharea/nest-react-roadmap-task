@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { User } from '../../types';
-import { ContextType } from '../types';
+import { ContextStateType, ContextType } from '../types';
 
 export const UsersContext = React.createContext<ContextType<User>>
 ({
@@ -9,7 +9,7 @@ export const UsersContext = React.createContext<ContextType<User>>
 });
 
 export const UsersProvider = (props: any) => {
-  const [state, setState] = useState<User[]>([]);
+  const [state, setState] = useState<ContextStateType<User>[]>([]);
 
   return (
     <UsersContext.Provider value={{ state, setState }}>

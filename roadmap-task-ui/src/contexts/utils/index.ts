@@ -1,2 +1,2 @@
-export { getNumOfItemsRequired } from './getNumOfItemsRequired';
-export { getLastItemIDOnPreviousPage } from './getLastItemIDOnPreviousPage';
+export { getItemsFromContext } from './getItemsFromContext';
+export { saveItemsToContext } from './saveItemsToContext';

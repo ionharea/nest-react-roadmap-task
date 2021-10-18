@@ -4,23 +4,22 @@ import { useParams } from 'react-router-dom';
 import { PostsList } from '../components/posts-list';
 import { getUser } from '../services';
 import { UsersContext } from '../contexts/providers/users-context';
-import { getItemFromContext } from '../contexts/utils/getItemFromContext';
-import { setContextItems } from '../contexts/utils/setContextItems';
+import { getItemsFromContext, saveItemsToContext } from '../contexts/utils';
 
 export type UserIDRouteParam = {
   userId: string;
 }
 
 export const UserDetails = () => {
+  const { state, setState } = useContext(UsersContext);
+
   const { userId } = useParams<UserIDRouteParam>();
 
-  const { state: persistedUsers, setState } = useContext(UsersContext);
-
-  const user = getItemFromContext(persistedUsers, Number(userId));
+  const users = getItemsFromContext({ state, itemId: Number(userId) });
 
   useEffect(() => {
-    if (!user) {
-      getUser(userId).then(user => setContextItems([user], setState));
+    if (!users.length) {
+      getUser(userId).then(user => saveItemsToContext({ items: [user] }, setState));
     }
   }, [userId]);
 
@@ -28,7 +27,7 @@ export const UserDetails = () => {
     <>
       <List
         itemLayout='horizontal'
-        dataSource={!user ? [] : [user]}
+        dataSource={users}
         renderItem={user => (
           <List.Item>
             <List.Item.Meta

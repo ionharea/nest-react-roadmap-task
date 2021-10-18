@@ -1,11 +1,17 @@
 import { Post, User } from '../../types';
-import { getLastItemIDOnPreviousPage } from './getLastItemIDOnPreviousPage';
+import { ContextStateType } from '../types';
 
-export const getItemsFromContext = <T extends User | Post>(persistedItems: T[], actualPageNumber: number, numOfItemsRequired: number): T[] => {
-  if (persistedItems.length > 0) {
-    const lastUserIDOnPreviousPage = getLastItemIDOnPreviousPage(actualPageNumber);
+type Props<T> = {
+  state: ContextStateType<T>[],
+  pageId?: number,
+  itemId?: number,
+  identifierId?: number
+}
 
-    return persistedItems.filter(item => item.id > lastUserIDOnPreviousPage && item.id <= numOfItemsRequired);
-  }
-  return [];
+export const getItemsFromContext = <T extends User | Post>(props: Props<T>): T[] => {
+  const { state, pageId, itemId, identifierId } = props;
+
+  if (!pageId && itemId) return state.map(({ items }) => items).flat().filter(item => item.id === itemId);
+
+  return state.filter(stateItem => stateItem.pageId === pageId && stateItem.identifierId === identifierId).map(stateItem => stateItem.items).flat();
 };

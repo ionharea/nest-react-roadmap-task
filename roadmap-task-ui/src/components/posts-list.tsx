@@ -4,28 +4,28 @@ import { Link, useParams } from 'react-router-dom';
 import { itemRender } from '../pages/utils';
 import { UserIDRouteParam } from '../pages/users-details';
 import { getUserPosts } from '../services';
-import { getNumOfItemsRequired } from '../contexts/utils';
-import { getItemsFromContext } from '../contexts/utils/getItemsFromContext';
 import { DEF_PAGE } from '../services/constants';
-import { setContextItems } from '../contexts/utils/setContextItems';
 import { PostsContext } from '../contexts/providers/posts-context';
+import { getItemsFromContext, saveItemsToContext } from '../contexts/utils';
 
 export const PostsList = () => {
+  const { state, setState } = useContext(PostsContext);
   const [pageNumber, setPageNumber] = useState(Number(DEF_PAGE));
 
   const { userId } = useParams<UserIDRouteParam>();
 
-  const { state: persistedPosts, setState } = useContext(PostsContext);
-
-  const numOfItemsRequired = getNumOfItemsRequired(pageNumber);
-
-  const posts = getItemsFromContext(persistedPosts, pageNumber, numOfItemsRequired);
+  const posts = getItemsFromContext({ state, pageId: pageNumber, identifierId: Number(userId) });
 
   useEffect(() => {
-    if (posts.length !== numOfItemsRequired) {
-      getUserPosts(userId, String(pageNumber)).then(posts => setContextItems(posts, setState));
+    if (!posts.length) {
+      getUserPosts(userId, String(pageNumber)).then(posts => saveItemsToContext({
+          items: posts,
+          pageId: pageNumber,
+          identifierId: Number(userId),
+        }, setState),
+      );
     }
-  }, [userId, pageNumber]);
+  }, [pageNumber]);
 
   return (
     <>
