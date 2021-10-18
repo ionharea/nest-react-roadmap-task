@@ -1,27 +1,33 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { List } from 'antd';
 import { useParams } from 'react-router-dom';
-import { User } from '../../../roadmap-task-api/src/types/user';
 import { PostsList } from '../components/posts-list';
 import { getUser } from '../services';
+import { UsersContext } from '../contexts/providers/users-context';
+import { getItemsFromContext, saveItemsToContext } from '../contexts/utils';
 
 export type UserIDRouteParam = {
   userId: string;
 }
 
 export const UserDetails = () => {
-  const [user, setUser] = useState({} as User);
+  const { state, setState } = useContext(UsersContext);
+
   const { userId } = useParams<UserIDRouteParam>();
 
+  const users = getItemsFromContext({ state, itemId: Number(userId) });
+
   useEffect(() => {
-    getUser(userId).then(user => setUser(user));
+    if (!users.length) {
+      getUser(userId).then(user => saveItemsToContext({ items: [user] }, setState));
+    }
   }, [userId]);
 
   return (
     <>
       <List
         itemLayout='horizontal'
-        dataSource={Object.entries(user).length === 0 ? [] : [user]}
+        dataSource={users}
         renderItem={user => (
           <List.Item>
             <List.Item.Meta
@@ -31,10 +37,9 @@ export const UserDetails = () => {
           </List.Item>
         )}
       />
-      <br/>
-      <br/>
+      <br />
+      <br />
       <PostsList />
     </>
-
   );
 };

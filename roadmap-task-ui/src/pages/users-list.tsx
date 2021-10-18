@@ -1,16 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { List, Pagination } from 'antd';
-import { User } from '../types';
 import { Link } from 'react-router-dom';
 import { itemRender } from './utils';
 import { getUsers } from '../services';
+import { UsersContext } from '../contexts/providers/users-context';
+import { DEF_PAGE } from '../services/constants';
+import { getItemsFromContext, saveItemsToContext } from '../contexts/utils';
 
 export const UsersList = () => {
-  const [users, setUsers] = useState<User[]>([]);
-  const [pageNumber, setPageNumber] = useState(0);
+  const { state, setState } = useContext(UsersContext);
+
+  const [pageNumber, setPageNumber] = useState(Number(DEF_PAGE));
+
+  const users = getItemsFromContext({ state, pageId: pageNumber });
 
   useEffect(() => {
-    getUsers(String(pageNumber)).then(users => setUsers(users));
+    if (!users.length) {
+      getUsers(String(pageNumber)).then(users => saveItemsToContext({ items: users, pageId: pageNumber }, setState));
+    }
   }, [pageNumber]);
 
   return (
